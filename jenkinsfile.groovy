@@ -4,22 +4,19 @@ pipeline {
     stages {
         stage('Build') {
             agent {
-                docker { image 'maven:3.8.5-openjdk-11' }
+                docker { image 'openjdk:11' } // Replace with the Docker image that suits your project's needs
             }
             steps {
                 echo 'Building the application...'
-                // Use Maven inside a Docker container
-                sh 'mvn clean install'
+                // Insert all your build commands directly here
+                sh 'javac -d bin src/*.java' // Example for Java, replace with your actual commands
             }
         }
         stage('Unit and Integration Tests') {
-            agent {
-                docker { image 'maven:3.8.5-openjdk-11' }
-            }
             steps {
                 echo 'Running unit and integration tests...'
-                // Use Maven to run tests inside a Docker container
-                sh 'mvn test'
+                // Add commands to run your tests directly here
+                sh 'java -cp bin org.junit.runner.JUnitCore TestClass' // Example, replace with your actual commands
             }
         }
         stage('Code Analysis') {
@@ -28,7 +25,7 @@ pipeline {
             }
             steps {
                 echo 'Running code analysis...'
-                // Use SonarQube scanner inside a Docker container
+                // Run SonarQube analysis commands here
                 sh 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=your_sonarqube_token'
             }
         }
@@ -38,7 +35,7 @@ pipeline {
             }
             steps {
                 echo 'Performing security scan...'
-                // Use OWASP Dependency-Check inside a Docker container
+                // Run security scan commands here
                 sh 'dependency-check.sh --project "My Project" --scan /src'
             }
         }
@@ -48,18 +45,15 @@ pipeline {
             }
             steps {
                 echo 'Deploying to Staging...'
-                // Use AWS CLI inside a Docker container
+                // Run deployment commands here
                 sh 'aws deploy --application-name myApp --deployment-group myStagingGroup'
             }
         }
         stage('Integration Tests on Staging') {
-            agent {
-                docker { image 'maven:3.8.5-openjdk-11' }
-            }
             steps {
                 echo 'Running integration tests on staging...'
-                // Use Maven to run tests inside a Docker container
-                sh 'mvn verify'
+                // Run your integration tests directly here
+                sh 'java -cp bin org.junit.runner.JUnitCore StagingTestClass' // Example, replace with your actual commands
             }
         }
         stage('Deploy to Production') {
@@ -68,7 +62,7 @@ pipeline {
             }
             steps {
                 echo 'Deploying to Production...'
-                // Use AWS CLI inside a Docker container
+                // Run production deployment commands here
                 sh 'aws deploy --application-name myApp --deployment-group myProductionGroup'
             }
         }

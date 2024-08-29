@@ -3,52 +3,73 @@ pipeline {
 
     stages {
         stage('Build') {
+            agent {
+                docker { image 'maven:3.8.5-openjdk-11' }
+            }
             steps {
                 echo 'Building the application...'
-                // Replace with your actual build command
-                // sh 'mvn clean install'
+                // Use Maven inside a Docker container
+                sh 'mvn clean install'
             }
         }
         stage('Unit and Integration Tests') {
+            agent {
+                docker { image 'maven:3.8.5-openjdk-11' }
+            }
             steps {
                 echo 'Running unit and integration tests...'
-                // Replace with your actual test command
-                // sh 'mvn test'
+                // Use Maven to run tests inside a Docker container
+                sh 'mvn test'
             }
         }
         stage('Code Analysis') {
+            agent {
+                docker { image 'sonarsource/sonar-scanner-cli:latest' }
+            }
             steps {
                 echo 'Running code analysis...'
-                // Replace with your actual tool command
-                // sh 'sonar-scanner'
+                // Use SonarQube scanner inside a Docker container
+                sh 'sonar-scanner -Dsonar.projectKey=my_project -Dsonar.sources=. -Dsonar.host.url=http://localhost:9000 -Dsonar.login=your_sonarqube_token'
             }
         }
         stage('Security Scan') {
+            agent {
+                docker { image 'owasp/dependency-check:latest' }
+            }
             steps {
                 echo 'Performing security scan...'
-                // Replace with your actual tool command
-                // sh 'dependency-check --project example --scan .'
+                // Use OWASP Dependency-Check inside a Docker container
+                sh 'dependency-check.sh --project "My Project" --scan /src'
             }
         }
         stage('Deploy to Staging') {
+            agent {
+                docker { image 'amazon/aws-cli:latest' }
+            }
             steps {
                 echo 'Deploying to Staging...'
-                // Replace with your actual deployment script/command
-                // sh 'deploy script or command for staging'
+                // Use AWS CLI inside a Docker container
+                sh 'aws deploy --application-name myApp --deployment-group myStagingGroup'
             }
         }
         stage('Integration Tests on Staging') {
+            agent {
+                docker { image 'maven:3.8.5-openjdk-11' }
+            }
             steps {
                 echo 'Running integration tests on staging...'
-                // Replace with your integration tests command
-                // sh 'integration tests command'
+                // Use Maven to run tests inside a Docker container
+                sh 'mvn verify'
             }
         }
         stage('Deploy to Production') {
+            agent {
+                docker { image 'amazon/aws-cli:latest' }
+            }
             steps {
                 echo 'Deploying to Production...'
-                // Replace with your actual deployment script/command
-                // sh 'deploy script or command for production'
+                // Use AWS CLI inside a Docker container
+                sh 'aws deploy --application-name myApp --deployment-group myProductionGroup'
             }
         }
     }

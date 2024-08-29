@@ -60,12 +60,12 @@ pipeline {
         success {
             emailext subject: "Jenkins Pipeline Success",
                      body: "The pipeline completed successfully.",
-                     to: 'developer@example.com'
+                     to: 'ehsentahir@gmail.com'
         }
         failure {
             emailext subject: "Jenkins Pipeline Failure",
                      body: "The pipeline failed. Please check the logs.",
-                     to: 'developer@example.com'
+                     to: 'ehsentahir@gmail.com'
         }
     }
 }
